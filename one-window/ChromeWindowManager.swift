@@ -15,6 +15,14 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
     @Published var lastWindowCount = 0
     @Published var windowsClosed = 0
     @Published var hasNotificationPermission = false
+    @Published var notificationsEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(notificationsEnabled, forKey: "notificationsEnabled")
+            #if DEBUG
+            print("⚙️ Notifications enabled set to: \(notificationsEnabled)")
+            #endif
+        }
+    }
     @Published var maxWindows: Int {
         didSet {
             // Ensure value is >= 0
@@ -33,6 +41,8 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
     override init() {
         // Initialize maxWindows from UserDefaults (default to 2)
         self.maxWindows = UserDefaults.standard.object(forKey: "maxWindows") as? Int ?? 2
+        // Initialize notificationsEnabled from UserDefaults (default to true)
+        self.notificationsEnabled = UserDefaults.standard.object(forKey: "notificationsEnabled") as? Bool ?? true
         
         super.init()
         // Set up notification center delegate
@@ -160,8 +170,14 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
                     print("🪟 Successfully closed \(closedCount) Chrome window(s). Total windows before: \(windowCount)")
                 }
                 
-                // Send notification about blocked windows
-                sendWindowBlockedNotification(count: closedCount)
+                // Send notification about blocked windows if enabled and permitted
+                if notificationsEnabled && hasNotificationPermission {
+                    sendWindowBlockedNotification(count: closedCount)
+                } else {
+                    #if DEBUG
+                    print("🔕 Skipping notification (enabled=\(notificationsEnabled), permission=\(hasNotificationPermission))")
+                    #endif
+                }
             }
         }
     }

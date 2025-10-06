@@ -53,12 +53,19 @@ struct MenuBarView: View {
                     .labelsHidden()
                     .padding(.top, 10)
                     
-                    // Notifications Toggle
+                    // Notifications Toggle (app-level enable/disable)
                     Toggle("Notifications", isOn: Binding(
-                        get: { chromeManager.hasNotificationPermission },
-                        set: { _ in 
-                            if !chromeManager.hasNotificationPermission {
-                                chromeManager.openNotificationSettings()
+                        get: { chromeManager.notificationsEnabled },
+                        set: { newValue in
+                            if newValue {
+                                // Enabling: if permission not granted, prompt user via System Settings
+                                if !chromeManager.hasNotificationPermission {
+                                    chromeManager.openNotificationSettings()
+                                }
+                                chromeManager.notificationsEnabled = true
+                            } else {
+                                // Disabling: simply turn off app-level notifications
+                                chromeManager.notificationsEnabled = false
                             }
                         }
                     ))
