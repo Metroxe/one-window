@@ -75,11 +75,6 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
     }
     
     func startMonitoring() {
-        guard AccessibilityPermission.isTrusted() else {
-            print("⚠️ Cannot start monitoring: Accessibility permission not granted")
-            return
-        }
-        
         guard timer == nil else {
             print("⚠️ Already monitoring")
             return
@@ -108,6 +103,16 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
     }
     
     private func enforceWindowLimit() {
+        // If we don't have Accessibility permission yet, skip work but keep the timer running
+        guard AccessibilityPermission.isTrusted() else {
+            #if DEBUG
+            print("⚠️ Skipping enforcement: Accessibility permission not granted")
+            #endif
+            DispatchQueue.main.async {
+                self.lastWindowCount = 0
+            }
+            return
+        }
         // Use Accessibility API instead of AppleScript - no Automation permission needed!
         guard let chromeApp = NSRunningApplication.runningApplications(withBundleIdentifier: "com.google.Chrome").first else {
             // Chrome not running

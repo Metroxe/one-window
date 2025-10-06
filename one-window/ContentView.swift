@@ -54,8 +54,8 @@ struct MenuBarView: View {
                 .controlSize(.small)
                 .padding(.bottom, 8)
             }
-            // Settings Section
-            if isTrusted {
+            // Settings Section (always visible; enforcement is a no-op until trusted)
+            if true {
                 VStack(spacing: 8) {
                     // Max Windows Picker
                     Picker("Max Windows", selection: $chromeManager.maxWindows) {
