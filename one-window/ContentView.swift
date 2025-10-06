@@ -40,6 +40,19 @@ struct MenuBarView: View {
                 .controlSize(.small)
                 .tint(.orange)
                 .padding(.vertical, 10)
+                Button(action: {
+                    isTrusted = AccessibilityPermission.isTrusted()
+                }) {
+                    HStack {
+                        Image(systemName: "arrow.clockwise")
+                        Text("Refresh permission status")
+                            .font(.caption)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .padding(.bottom, 8)
             }
             // Settings Section
             if isTrusted {

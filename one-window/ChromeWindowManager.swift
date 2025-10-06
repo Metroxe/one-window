@@ -45,8 +45,6 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
         self.notificationsEnabled = UserDefaults.standard.object(forKey: "notificationsEnabled") as? Bool ?? true
         
         super.init()
-        // Ensure Accessibility permission is requested once on launch, outside of UI lifecycle
-        _ = AccessibilityPermission.requestIfNeeded()
         // Set up notification center delegate
         UNUserNotificationCenter.current().delegate = self
         // Check initial notification permission status
