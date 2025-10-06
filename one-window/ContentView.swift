@@ -7,107 +7,95 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct MenuBarView: View {
     @State private var isTrusted = AccessibilityPermission.isTrusted()
-    @StateObject private var chromeManager = ChromeWindowManager()
+    @EnvironmentObject private var chromeManager: ChromeWindowManager
     
     var body: some View {
-        VStack(spacing: 20) {
-            // Permission Status
-            Image(systemName: isTrusted ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
-                .imageScale(.large)
-                .foregroundStyle(isTrusted ? .green : .orange)
-                .font(.system(size: 48))
-            
-            Text(isTrusted ? "Accessibility Permission Granted" : "Accessibility Permission Required")
-                .font(.headline)
-            
-            Text("Status: \(isTrusted ? "Trusted" : "Not Trusted")")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 12) {
+            // Header
+            HStack {
+                Image(systemName: "rectangle.on.rectangle")
+                    .font(.title2)
+                Text("One Window")
+                    .font(.headline)
+            }
+            .padding(.bottom, 4)
             
             Divider()
-                .padding(.vertical, 10)
             
-            // Chrome Monitoring Section
-            VStack(spacing: 12) {
-                HStack {
-                    Circle()
-                        .fill(chromeManager.isMonitoring ? Color.green : Color.gray)
-                        .frame(width: 12, height: 12)
-                    Text(chromeManager.isMonitoring ? "Monitoring Active" : "Monitoring Inactive")
-                        .font(.headline)
-                }
-                
-                if chromeManager.isMonitoring {
-                    VStack(spacing: 4) {
-                        Text("Max Windows: 2")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text("Last Count: \(chromeManager.lastWindowCount)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text("Windows Closed: \(chromeManager.windowsClosed)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                
-                if isTrusted {
-                    if chromeManager.isMonitoring {
-                        Button("Stop Monitoring") {
-                            chromeManager.stopMonitoring()
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.red)
-                    } else {
-                        Button("Start Monitoring Chrome") {
-                            chromeManager.startMonitoring()
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                } else {
-                    Text("Grant Accessibility permission to start monitoring")
-                        .font(.caption)
+            // Status Section
+            HStack {
+                Circle()
+                    .fill(chromeManager.isMonitoring ? Color.green : Color.gray)
+                    .frame(width: 8, height: 8)
+                Text(chromeManager.isMonitoring ? "Active" : "Inactive")
+                    .font(.subheadline)
+                Spacer()
+            }
+            
+            if chromeManager.isMonitoring {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Max Windows: 2")
+                        .font(.caption2)
                         .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                    Text("Current: \(chromeManager.lastWindowCount)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    Text("Closed: \(chromeManager.windowsClosed)")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.leading, 16)
+            }
+            
+            Divider()
+            
+            // Controls
+            if isTrusted {
+                Button(action: {
+                    if chromeManager.isMonitoring {
+                        chromeManager.stopMonitoring()
+                    } else {
+                        chromeManager.startMonitoring()
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: chromeManager.isMonitoring ? "stop.circle" : "play.circle")
+                        Text(chromeManager.isMonitoring ? "Stop Monitoring" : "Start Monitoring")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(chromeManager.isMonitoring ? .red : .blue)
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Permission Required")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Button("Open System Settings") {
+                        AccessibilityPermission.openSettings()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
                 }
             }
             
             Divider()
-                .padding(.vertical, 10)
             
-            // Permission Controls
-            if !isTrusted {
-                Button("Request Permission") {
-                    _ = AccessibilityPermission.requestIfNeeded()
-                    // Check again after a brief delay
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        isTrusted = AccessibilityPermission.isTrusted()
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                
-                Button("Open System Settings") {
-                    AccessibilityPermission.openSettings()
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.orange)
+            // Quit Button
+            Button("Quit") {
+                NSApplication.shared.terminate(nil)
             }
-            
-            Button("Refresh Status") {
-                isTrusted = AccessibilityPermission.isTrusted()
-            }
-            .buttonStyle(.bordered)
-            
-            Button("Print Debug Info") {
-                AccessibilityPermission.printDebugInfo()
-            }
-            .buttonStyle(.bordered)
-            .font(.caption)
+            .keyboardShortcut("q")
         }
         .padding()
+        .frame(width: 250)
         .onAppear {
             _ = AccessibilityPermission.requestIfNeeded()
             isTrusted = AccessibilityPermission.isTrusted()
@@ -116,5 +104,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    MenuBarView()
+        .environmentObject(ChromeWindowManager())
 }

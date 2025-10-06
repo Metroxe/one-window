@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct one_windowApp: App {
+    @StateObject private var chromeManager = ChromeWindowManager()
+    
     var body: some Scene {
-        WindowGroup {
-            ContentView()
+        MenuBarExtra("One Window", systemImage: "rectangle.on.rectangle") {
+            MenuBarView()
+                .environmentObject(chromeManager)
         }
     }
 }

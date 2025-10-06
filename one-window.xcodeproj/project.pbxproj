@@ -29,6 +29,8 @@
 		9CA9F88B2E93380700F6C61B /* one-windowUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "one-windowUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CA9F8A22E93387200F6C61B /* one-window.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "one-window.xcodeproj"; sourceTree = "<group>"; };
 		9CA9F8C52E9346A900F6C61B /* one-window.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "one-window.xcodeproj"; sourceTree = "<group>"; };
+		9CA9F8FB2E93496700F6C61B /* one-window.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "one-window.xcodeproj"; sourceTree = "<group>"; };
+		9CA9F91E2E934BB600F6C61B /* one-window.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = "one-window.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -102,6 +104,20 @@
 			sourceTree = "<group>";
 		};
 		9CA9F8C62E9346A900F6C61B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9CA9F8FC2E93496700F6C61B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9CA9F91F2E934BB600F6C61B /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -216,12 +232,20 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = 9CA9F8FC2E93496700F6C61B /* Products */;
+					ProjectRef = 9CA9F8FB2E93496700F6C61B /* one-window.xcodeproj */;
+				},
+				{
 					ProductGroup = 9CA9F8C62E9346A900F6C61B /* Products */;
 					ProjectRef = 9CA9F8C52E9346A900F6C61B /* one-window.xcodeproj */;
 				},
 				{
 					ProductGroup = 9CA9F8A32E93387200F6C61B /* Products */;
 					ProjectRef = 9CA9F8A22E93387200F6C61B /* one-window.xcodeproj */;
+				},
+				{
+					ProductGroup = 9CA9F91F2E934BB600F6C61B /* Products */;
+					ProjectRef = 9CA9F91E2E934BB600F6C61B /* one-window.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -428,6 +452,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "one-window needs permission to monitor and close Google Chrome windows to keep your workspace focused.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -456,6 +481,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "one-window needs permission to monitor and close Google Chrome windows to keep your workspace focused.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
