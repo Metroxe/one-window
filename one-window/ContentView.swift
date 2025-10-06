@@ -10,6 +10,7 @@ import SwiftUI
 struct MenuBarView: View {
     @State private var isTrusted = AccessibilityPermission.isTrusted()
     @EnvironmentObject private var chromeManager: ChromeWindowManager
+    @ObservedObject private var loginItemManager = LoginItemManager.shared
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -120,6 +121,21 @@ struct MenuBarView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(chromeManager.isMonitoring ? .red : .blue)
             }
+            
+            Divider()
+            
+            // Settings Section
+            Toggle(isOn: Binding(
+                get: { loginItemManager.isEnabled },
+                set: { _ in loginItemManager.toggle() }
+            )) {
+                HStack {
+                    Image(systemName: "power")
+                    Text("Start at Login")
+                }
+                .font(.subheadline)
+            }
+            .toggleStyle(.checkbox)
             
             Divider()
             
