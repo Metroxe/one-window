@@ -15,13 +15,25 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
     @Published var lastWindowCount = 0
     @Published var windowsClosed = 0
     @Published var hasNotificationPermission = false
+    @Published var maxWindows: Int {
+        didSet {
+            // Ensure value is >= 0
+            if maxWindows < 0 {
+                maxWindows = 0
+            }
+            UserDefaults.standard.set(maxWindows, forKey: "maxWindows")
+            print("⚙️ Max windows updated to: \(maxWindows)")
+        }
+    }
     
     private var timer: Timer?
-    private let maxWindows = 2  // TODO: Make this configurable later
     private let pollInterval: TimeInterval = 0.5  // Check twice per second
     private var hasRequestedNotificationPermission = false
     
     override init() {
+        // Initialize maxWindows from UserDefaults (default to 2)
+        self.maxWindows = UserDefaults.standard.object(forKey: "maxWindows") as? Int ?? 2
+        
         super.init()
         // Set up notification center delegate
         UNUserNotificationCenter.current().delegate = self

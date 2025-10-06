@@ -13,98 +13,77 @@ struct MenuBarView: View {
     @ObservedObject private var loginItemManager = LoginItemManager.shared
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 0) {
             // Header
             HStack {
-                Image(systemName: "rectangle.on.rectangle")
-                    .font(.title2)
                 Text("One Window")
                     .font(.headline)
-            }
-            .padding(.bottom, 4)
-            
-            Divider()
-            
-            // Status Section
-            HStack {
+                Spacer()
                 Circle()
                     .fill(chromeManager.isMonitoring ? Color.green : Color.gray)
                     .frame(width: 8, height: 8)
-                Text(chromeManager.isMonitoring ? "Active" : "Inactive")
-                    .font(.subheadline)
-                Spacer()
             }
+            .padding(.bottom, 10)
             
-            if chromeManager.isMonitoring {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Max Windows: 2")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text("Current: \(chromeManager.lastWindowCount)")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Text("Closed: \(chromeManager.windowsClosed)")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.leading, 16)
-            }
-            
-            Divider()
-            
-            // Permissions Section
+            // Permissions Warning
             if !isTrusted {
-                VStack(alignment: .leading, spacing: 8) {
+                Divider()
+                
+                Button(action: {
+                    AccessibilityPermission.openSettings()
+                }) {
                     HStack {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundStyle(.orange)
-                        Text("Accessibility Required")
+                        Text("Grant Accessibility Access")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
                     }
-                    
-                    Button("Open System Settings") {
-                        AccessibilityPermission.openSettings()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
+                    .frame(maxWidth: .infinity)
                 }
-                
-                Divider()
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .tint(.orange)
+                .padding(.vertical, 10)
             }
             
-            if isTrusted && !chromeManager.hasNotificationPermission {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Image(systemName: "bell.badge.fill")
-                            .foregroundStyle(.orange)
-                        Text("Notifications Disabled")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Button(action: {
-                            chromeManager.refreshPermissionStatus()
-                        }) {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.caption)
-                        }
-                        .buttonStyle(.plain)
-                        .help("Refresh permission status")
-                    }
-                    
-                    Button("Enable Notifications") {
-                        chromeManager.openNotificationSettings()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
-                    .tint(.orange)
-                }
-                
-                Divider()
-            }
-            
-            // Controls
+            // Settings Section
             if isTrusted {
+                Divider()
+                
+                VStack(spacing: 8) {
+                    // Max Windows Picker
+                    Picker("Max Windows", selection: $chromeManager.maxWindows) {
+                        ForEach(0...10, id: \.self) { number in
+                            Text("\(number)").tag(number)
+                        }
+                    }
+                    .labelsHidden()
+                    
+                    // Notifications Toggle
+                    Toggle("Notifications", isOn: Binding(
+                        get: { chromeManager.hasNotificationPermission },
+                        set: { _ in 
+                            if !chromeManager.hasNotificationPermission {
+                                chromeManager.openNotificationSettings()
+                            }
+                        }
+                    ))
+                    .font(.subheadline)
+                    .toggleStyle(.checkbox)
+                    
+                    // Start at Login Toggle
+                    Toggle("Start at Login", isOn: Binding(
+                        get: { loginItemManager.isEnabled },
+                        set: { _ in loginItemManager.toggle() }
+                    ))
+                    .font(.subheadline)
+                    .toggleStyle(.checkbox)
+                }
+                .padding(.vertical, 10)
+                
+                Divider()
+                
+                // Main Control Button
                 Button(action: {
                     if chromeManager.isMonitoring {
                         chromeManager.stopMonitoring()
@@ -113,29 +92,16 @@ struct MenuBarView: View {
                     }
                 }) {
                     HStack {
-                        Image(systemName: chromeManager.isMonitoring ? "stop.circle" : "play.circle")
-                        Text(chromeManager.isMonitoring ? "Stop Monitoring" : "Start Monitoring")
+                        Image(systemName: chromeManager.isMonitoring ? "stop.circle.fill" : "play.circle.fill")
+                        Text(chromeManager.isMonitoring ? "Stop" : "Start")
                     }
                     .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .controlSize(.large)
                 .tint(chromeManager.isMonitoring ? .red : .blue)
+                .padding(.vertical, 10)
             }
-            
-            Divider()
-            
-            // Settings Section
-            Toggle(isOn: Binding(
-                get: { loginItemManager.isEnabled },
-                set: { _ in loginItemManager.toggle() }
-            )) {
-                HStack {
-                    Image(systemName: "power")
-                    Text("Start at Login")
-                }
-                .font(.subheadline)
-            }
-            .toggleStyle(.checkbox)
             
             Divider()
             
@@ -144,9 +110,10 @@ struct MenuBarView: View {
                 NSApplication.shared.terminate(nil)
             }
             .keyboardShortcut("q")
+            .padding(.top, 10)
         }
         .padding()
-        .frame(width: 250)
+        .frame(width: 220)
         .onAppear {
             _ = AccessibilityPermission.requestIfNeeded()
             isTrusted = AccessibilityPermission.isTrusted()
