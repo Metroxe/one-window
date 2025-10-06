@@ -101,3 +101,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Release artifacts
+*.dmg
+*.zip
+*.sha256
+ExportOptions.plist
+dmg_temp/

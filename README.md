@@ -2,6 +2,10 @@
 
 A macOS menu bar app that keeps Google Chrome to a maximum of 2 windows. New windows are automatically closed the moment they appear.
 
+## Installation
+
+Download the latest release from the [Releases page](../../releases/latest). See [INSTALLATION.md](INSTALLATION.md) for detailed installation instructions.
+
 ## Usage
 
 1. Launch the app (appears in your menu bar)
@@ -21,7 +25,3 @@ When Chrome exceeds 2 windows, the app closes the newest ones and shows a notifi
 ## Development
 
 Built with Swift and SwiftUI. See [ARCHITECTURE.md](ARCHITECTURE.md) for technical details.
-
-```bash
-open one-window.xcodeproj
-```
