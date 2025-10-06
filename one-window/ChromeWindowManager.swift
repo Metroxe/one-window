@@ -45,6 +45,17 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
         self.notificationsEnabled = UserDefaults.standard.object(forKey: "notificationsEnabled") as? Bool ?? true
         
         super.init()
+        
+        // Print debug info on initialization
+        print("═══════════════════════════════════════")
+        print("📊 One Window - Initialization Debug")
+        print("═══════════════════════════════════════")
+        print("Bundle ID: \(Bundle.main.bundleIdentifier ?? "unknown")")
+        print("App Path: \(Bundle.main.bundlePath)")
+        print("Accessibility Trusted: \(AccessibilityPermission.isTrusted())")
+        print("Max Windows: \(maxWindows)")
+        print("═══════════════════════════════════════")
+        
         // Set up notification center delegate
         UNUserNotificationCenter.current().delegate = self
         // Check initial notification permission status
@@ -60,11 +71,14 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
         
         // Auto-start monitoring if accessibility permission is granted
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if AccessibilityPermission.isTrusted() {
+            let isTrusted = AccessibilityPermission.isTrusted()
+            print("🔍 Auto-start check - Accessibility Trusted: \(isTrusted)")
+            if isTrusted {
                 print("🚀 Auto-starting monitoring on app launch...")
                 self.startMonitoring()
             } else {
                 print("⚠️ Skipping auto-start: Accessibility permission not granted")
+                print("💡 Please enable in: System Settings → Privacy & Security → Accessibility")
             }
         }
     }

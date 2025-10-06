@@ -41,7 +41,11 @@ struct MenuBarView: View {
                 .tint(.orange)
                 .padding(.vertical, 10)
                 Button(action: {
-                    isTrusted = AccessibilityPermission.isTrusted()
+                    let trusted = AccessibilityPermission.isTrusted()
+                    print("🔄 Manual refresh - Accessibility trusted: \(trusted)")
+                    print("📍 Bundle ID: \(Bundle.main.bundleIdentifier ?? "unknown")")
+                    print("📍 App Path: \(Bundle.main.bundlePath)")
+                    isTrusted = trusted
                 }) {
                     HStack {
                         Image(systemName: "arrow.clockwise")
@@ -125,11 +129,15 @@ struct MenuBarView: View {
         .padding()
         .frame(width: 220)
         .onAppear {
-            isTrusted = AccessibilityPermission.isTrusted()
+            let trusted = AccessibilityPermission.isTrusted()
+            print("🖼️ MenuBarView appeared - Accessibility trusted: \(trusted)")
+            isTrusted = trusted
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             // Refresh Accessibility trust state when returning from System Settings
-            isTrusted = AccessibilityPermission.isTrusted()
+            let trusted = AccessibilityPermission.isTrusted()
+            print("🔄 App became active - Accessibility trusted: \(trusted)")
+            isTrusted = trusted
         }
     }
 }
