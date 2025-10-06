@@ -17,10 +17,5 @@ struct one_windowApp: App {
             MenuBarView()
                 .environmentObject(chromeManager)
         }
-        .onAppear {
-            // Trigger the Accessibility prompt only once per fresh install/launch sequence.
-            // Avoid calling this from UI views to prevent repeated prompts.
-            _ = AccessibilityPermission.requestIfNeeded()
-        }
     }
 }
