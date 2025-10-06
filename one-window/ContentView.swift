@@ -23,12 +23,8 @@ struct MenuBarView: View {
                     .fill(chromeManager.isMonitoring ? Color.green : Color.gray)
                     .frame(width: 8, height: 8)
             }
-            .padding(.bottom, 10)
-            
             // Permissions Warning
             if !isTrusted {
-                Divider()
-                
                 Button(action: {
                     AccessibilityPermission.openSettings()
                 }) {
@@ -45,11 +41,8 @@ struct MenuBarView: View {
                 .tint(.orange)
                 .padding(.vertical, 10)
             }
-            
             // Settings Section
             if isTrusted {
-                Divider()
-                
                 VStack(spacing: 8) {
                     // Max Windows Picker
                     Picker("Max Windows", selection: $chromeManager.maxWindows) {
@@ -58,6 +51,7 @@ struct MenuBarView: View {
                         }
                     }
                     .labelsHidden()
+                    .padding(.top, 10)
                     
                     // Notifications Toggle
                     Toggle("Notifications", isOn: Binding(
@@ -79,10 +73,8 @@ struct MenuBarView: View {
                     .font(.subheadline)
                     .toggleStyle(.checkbox)
                 }
-                .padding(.vertical, 10)
-                
+                .padding(.bottom, 10)
                 Divider()
-                
                 // Main Control Button
                 Button(action: {
                     if chromeManager.isMonitoring {
@@ -102,9 +94,7 @@ struct MenuBarView: View {
                 .tint(chromeManager.isMonitoring ? .red : .blue)
                 .padding(.vertical, 10)
             }
-            
             Divider()
-            
             // Quit Button
             Button("Quit") {
                 NSApplication.shared.terminate(nil)
