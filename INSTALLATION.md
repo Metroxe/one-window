@@ -48,10 +48,21 @@ xattr -cr /Applications/One\ Window.app
 When you first launch One Window, you'll need to grant it permissions:
 
 ### Accessibility Permission (Required)
-1. macOS will show a dialog asking for Accessibility permission
-2. Click "Open System Settings"
-3. Toggle on the switch next to "One Window"
-4. You may need to restart the app
+
+**Important:** If Accessibility permission isn't working after granting it, run this in Terminal:
+
+```bash
+# Remove quarantine attribute and reset permission
+sudo xattr -cr /Applications/one-window.app
+tccutil reset Accessibility com.christopherpowroznik.one-window
+```
+
+Then:
+1. Go to **System Settings** > **Privacy & Security** > **Accessibility**
+2. Remove any existing "one-window" entries (click the - button)
+3. Click the **+** button and add `/Applications/one-window.app`
+4. Toggle the switch **ON**
+5. Restart the app
 
 ### Notifications (Optional)
 - macOS may ask to allow notifications
@@ -71,6 +82,15 @@ If you prefer, you can also [build the app yourself](README.md#building-locally)
 
 ### "The app is damaged and can't be opened"
 This usually happens when the quarantine attribute wasn't cleared. Use Method 3 above.
+
+### Accessibility permission shows as granted but app still doesn't work
+Run these commands in Terminal:
+```bash
+sudo xattr -cr /Applications/one-window.app
+tccutil reset Accessibility com.christopherpowroznik.one-window
+sudo killall tccd
+```
+Then re-grant the permission in System Settings and restart the app.
 
 ### App doesn't appear in menu bar
 Make sure you granted Accessibility permission in System Settings.
