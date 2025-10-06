@@ -46,7 +46,39 @@ class ChromeWindowManager: NSObject, ObservableObject, UNUserNotificationCenterD
         
         super.init()
         
-        // Print debug info on initialization
+        // Print debug info on initialization with NSLog (always visible in Console.app)
+        NSLog("═══════════════════════════════════════")
+        NSLog("📊 ONE WINDOW INITIALIZATION DEBUG")
+        NSLog("═══════════════════════════════════════")
+        NSLog("Bundle ID: %@", Bundle.main.bundleIdentifier ?? "unknown")
+        NSLog("App Path: %@", Bundle.main.bundlePath)
+        
+        // Check code signature
+        let executablePath = Bundle.main.executablePath ?? "unknown"
+        NSLog("Executable Path: %@", executablePath)
+        
+        // Try to get code signing info
+        if let url = Bundle.main.bundleURL as CFURL? {
+            var staticCode: SecStaticCode?
+            let status = SecStaticCodeCreateWithPath(url, [], &staticCode)
+            if status == errSecSuccess, let code = staticCode {
+                var signingInfo: CFDictionary?
+                let infoStatus = SecCodeCopySigningInformation(code, [], &signingInfo)
+                if infoStatus == errSecSuccess {
+                    NSLog("✅ Code signature: VALID")
+                } else {
+                    NSLog("⚠️ Code signature: INVALID or AD-HOC (status: %d)", infoStatus)
+                }
+            } else {
+                NSLog("⚠️ Could not create static code (status: %d)", status)
+            }
+        }
+        
+        NSLog("Accessibility Trusted: %@", AccessibilityPermission.isTrusted() ? "YES" : "NO")
+        NSLog("Max Windows: %d", maxWindows)
+        NSLog("═══════════════════════════════════════")
+        
+        // Also use print for Xcode console
         print("═══════════════════════════════════════")
         print("📊 One Window - Initialization Debug")
         print("═══════════════════════════════════════")

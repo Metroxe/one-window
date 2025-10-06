@@ -98,6 +98,24 @@ jobs:
             -exportPath ./build/export \
             -exportOptionsPlist ExportOptions.plist
       
+      - name: Sign with ad-hoc signature and entitlements
+        run: |
+          # Sign the exported app with ad-hoc signature but include entitlements
+          # This allows the app to request Accessibility permissions properly
+          codesign --force --deep --sign - \
+            --entitlements one-window/one_window.entitlements \
+            --options runtime \
+            ./build/export/one-window.app
+          
+          echo "✅ App signed with ad-hoc signature and entitlements"
+          
+          # Verify the signature
+          codesign -dv ./build/export/one-window.app 2>&1 || true
+          
+          # Show entitlements
+          echo "📋 Entitlements:"
+          codesign -d --entitlements - ./build/export/one-window.app 2>&1 || true
+      
       - name: Create DMG
         run: |
           VERSION="${{ steps.version.outputs.version }}"
