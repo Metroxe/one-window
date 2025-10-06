@@ -51,6 +51,57 @@ struct MenuBarView: View {
             
             Divider()
             
+            // Permissions Section
+            if !isTrusted {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Accessibility Required")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Button("Open System Settings") {
+                        AccessibilityPermission.openSettings()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                }
+                
+                Divider()
+            }
+            
+            if isTrusted && !chromeManager.hasNotificationPermission {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "bell.badge.fill")
+                            .foregroundStyle(.orange)
+                        Text("Notifications Disabled")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button(action: {
+                            chromeManager.refreshPermissionStatus()
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.caption)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Refresh permission status")
+                    }
+                    
+                    Button("Enable Notifications") {
+                        chromeManager.openNotificationSettings()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    .tint(.orange)
+                }
+                
+                Divider()
+            }
+            
             // Controls
             if isTrusted {
                 Button(action: {
@@ -68,22 +119,6 @@ struct MenuBarView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(chromeManager.isMonitoring ? .red : .blue)
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.orange)
-                        Text("Permission Required")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Button("Open System Settings") {
-                        AccessibilityPermission.openSettings()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
-                }
             }
             
             Divider()
