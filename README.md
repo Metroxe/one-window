@@ -1,6 +1,6 @@
 # One Window
 
-A macOS menu bar app that keeps Google Chrome to a maximum of 2 windows. New windows are automatically closed the moment they appear.
+A macOS menu bar app that keeps Google Chrome to a maximum of `n` windows. New windows are automatically closed the moment they appear.
 
 ## Installation
 
