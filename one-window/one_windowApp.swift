@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppKit
 
 @main
 struct one_windowApp: App {
@@ -15,6 +16,11 @@ struct one_windowApp: App {
         MenuBarExtra("One Window", systemImage: "rectangle.on.rectangle") {
             MenuBarView()
                 .environmentObject(chromeManager)
+        }
+        .onAppear {
+            // Trigger the Accessibility prompt only once per fresh install/launch sequence.
+            // Avoid calling this from UI views to prevent repeated prompts.
+            _ = AccessibilityPermission.requestIfNeeded()
         }
     }
 }

@@ -112,7 +112,10 @@ struct MenuBarView: View {
         .padding()
         .frame(width: 220)
         .onAppear {
-            _ = AccessibilityPermission.requestIfNeeded()
+            isTrusted = AccessibilityPermission.isTrusted()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            // Refresh Accessibility trust state when returning from System Settings
             isTrusted = AccessibilityPermission.isTrusted()
         }
     }
